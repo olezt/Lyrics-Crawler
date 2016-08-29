@@ -80,8 +80,8 @@ sub sortResults {
     
     for (sort {$seen{$b} <=> $seen{$a} || lc($a) cmp lc($b) || $a  cmp  $b} keys %seen){
         next unless /\w/;
-        #next if /(br)|[a-zA-Z]{1,1}/;
-        next if /(br)|(i)/;
+        next if /(br)|^[a-zA-Z]{1,2}$/;
+        #next if /(br)|(i)/;
         printf "%-10s   found... %d times\n", $_, $seen{$_};
         last if ++$count > 9;
     }
@@ -89,8 +89,8 @@ sub sortResults {
     print "\n[-] Least used words: \n";
     for (sort { $seen{$a} <=> $seen{$b} } keys %seen){
         next unless /\w/;
-        #next if /(br)|[a-zA-Z]{1,1}/;
-        next if /(br)|(i)/;
+        next if /(br)|^[a-zA-Z]{1,2}$/;
+        #next if /(br)|(i)/;
         printf "%-10s   found... %d times\n", $_, $seen{$_};
         last if ++$count > 9;
     }
