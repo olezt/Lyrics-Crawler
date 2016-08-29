@@ -87,7 +87,7 @@ sub sortResults {
     }
     $count = 0;
     print "\n[-] Least used words: \n";
-    for (sort { $seen{$a} <=> $seen{$b} } keys %seen){
+    for (sort { $seen{$a} <=> $seen{$b} || length($a) le length($b)} keys %seen){
         next unless /\w/;
         next if /(br)|^[a-zA-Z]{1,2}$/;
         #next if /(br)|(i)/;
@@ -97,5 +97,5 @@ sub sortResults {
 
     print "\n";
     my $size = keys %seen;
-    printf "Total words used: %d\n", $size;
+    printf "[-] Unique words used on $numberofsongs songs: %d\n", $size;
 }
