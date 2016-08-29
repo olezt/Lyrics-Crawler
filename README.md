@@ -13,7 +13,7 @@ For now it is available only for Tupac. But soon it will be dynamic so it can be
 1. Open cmd and execute perl lyricsCrawler.pl
 2. Specify number of songs you want to analyze and wait for the results.
 
-<img src="printscreen.png" height="450"/>
+<img src="printscreenCMD.png" height="450"/>
 
 ### Requirements
 
