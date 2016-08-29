@@ -23,5 +23,3 @@ For now it is available only for Tupac. But soon it will be dynamic so it can be
 
 1. User will specify artist
 2. Sort least common words, by number of letters
-3. Extract from common words, words with less than 2 letters
-
