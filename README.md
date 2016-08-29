@@ -22,4 +22,3 @@ For now it is available only for Tupac. But soon it will be dynamic so it can be
 ### Future Additions
 
 1. User will specify artist
-2. Sort least common words, by number of letters
