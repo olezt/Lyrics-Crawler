@@ -10,6 +10,7 @@ use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
 use HTML::LinkExtor;
+use List::Util 'shuffle';
 
 my $browser = LWP::UserAgent->new();
    $browser->timeout(10);
@@ -85,6 +86,7 @@ sub getSongsUrl{
         print "[-] Sorry this artist does not exist in azlyrics website.\n[-] Try someone else\n";
         setNewArtist();
     }
+@urls = shuffle(@urls);
 }
 
 sub getLyrics{
