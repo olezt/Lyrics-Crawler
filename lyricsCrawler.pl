@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 
-# Tests for site crawler / db creator
+# Author @olezt
 
 use strict;
 use warnings;
@@ -20,24 +20,21 @@ my $numberofsongs;
 my $artist;
 my %seen;
 my $artisturl;
-
+my %argvs;
 
 main();
 exit 1;
 
 sub main{
-    if( $#ARGV>0){
-        if( $ARGV[0] eq "-u" || $ARGV[0] eq "-url" ){
-            push(@urls, $ARGV[1]);
-            $numberofsongs=1;
-            getResponse();
-        }else{
-            print "Argument is not valid.\n";
-        }
+    if( $#ARGV>0 && $#ARGV<2){
+        manageArgvs();
+    }elsif($#ARGV>=2){
+        print "You can provide only one argument";
+        exit 1;
     }else{
         setNewArtist();
-        getResponse();
     }
+    getResponse();
 }
 
 sub getResponse{
@@ -53,6 +50,22 @@ sub setNewArtist{
     getSongsUrl();
     getUserInput();
 }
+
+sub manageArgvs{
+    for(my $i=0 ; $i<$#ARGV ; $i=$i+2){
+        $argvs{$ARGV[$i]} = $ARGV[$i+1];
+    }
+    if(exists $argvs{'-u'}){
+        push(@urls, $argvs{'-u'});
+        $numberofsongs=1;
+    }elsif(exists $argvs{'-f'}){
+        ifArgvf();
+    }else{
+        print "Argument is not valid.\n";
+        exit 1;
+    }
+}
+
 
 sub initRequest{
     my $URL=$_[0];
@@ -103,6 +116,19 @@ sub getSongsUrl{
     }
 @urls = shuffle(@urls);
 }
+
+sub ifArgvf{
+    open (FILE, "$argvs{'-f'}") or die "Error opening the file $argvs{'-f'}\n";
+    while (<FILE>){
+        push(@urls, $_) for split /\s+/; 
+    }
+    $numberofsongs=@urls;    
+    if(!$urls[0]){
+        print "Something went wrong.";
+    }
+    close (FILE);
+}
+
 
 sub getLyrics{
     my $count = 0;
@@ -157,8 +183,8 @@ sub sortResults {
 
     print "\n";
     my $size = keys %seen;
-    if( $#ARGV>0){
-        printf "[-] Unique words used on this song: %d\n", $size;
+    if(exists $argvs{'-u'} || exists $argvs{'-f'}){
+        printf "[-] Unique words found: %d\n", $size;
     }else{
         printf "[-] Unique words used on $artist 's songs: %d\n", $size;
     }
