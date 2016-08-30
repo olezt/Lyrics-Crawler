@@ -8,7 +8,7 @@ Most / Least common words of your favorite artists' lyrics
 Find out the most and least common words that your favorite -or not- artists use in their lyrics.<br>
 Songs are used in random sequence each time.<br>
 
-Now specifing the -url argument you can analyze a specific song.
+See below for possible cli Arguments.<br>
 
 Written entirely in Perl.<br>
 
@@ -18,7 +18,8 @@ Keep in mind that using great number for songs to analyze may cause a ban ip. If
 ### Cli Arguments:
 Name   |   Description   |   Example
 ------------ | ------------- | -------------
-__-u <br> -url__	  |  Set url of a specific song to analyze | -u http://www.azlyrics.com/lyrics/nickiminaj/anaconda.html <br>-url http://www.azlyrics.com/lyrics/nickiminaj/anaconda.html
+__-u 	  |  Set url of a specific song to analyze | -u http://www.azlyrics.com/lyrics/2pac/meagainsttheworld.html
+__-f   |  Set a file with songs' urls as input | -f songs.txt
 
 ### How to use
 
