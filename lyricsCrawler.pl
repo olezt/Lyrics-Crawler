@@ -21,13 +21,26 @@ my $artist;
 my %seen;
 my $artisturl;
 
+
 main();
 exit 1;
 
 sub main{
-    setNewArtist();
-    
-    getUserInput();
+    if( $#ARGV>0){
+        if( $ARGV[0] eq "-u" || $ARGV[0] eq "-url" ){
+            push(@urls, $ARGV[1]);
+            $numberofsongs=1;
+            getResponse();
+        }else{
+            print "Argument is not valid.\n";
+        }
+    }else{
+        setNewArtist();
+        getResponse();
+    }
+}
+
+sub getResponse{
     getLyrics();
     sortResults();
 }
@@ -38,6 +51,7 @@ sub setNewArtist{
     getArtistUrl();
     initRequest($artisturl);
     getSongsUrl();
+    getUserInput();
 }
 
 sub initRequest{
@@ -115,7 +129,7 @@ sub sortResults {
     my @noWords=('you','and','br','the');
     my $boolean;
     my $count = 0;
-    print "\n[-] @noWords Most used words: \n";
+    print "\n[-] Most used words: \n";
   
         for (sort {$seen{$b} <=> $seen{$a} || lc($a) cmp lc($b) || $a  cmp  $b} keys %seen){
         my $boolean=0;
@@ -143,6 +157,10 @@ sub sortResults {
 
     print "\n";
     my $size = keys %seen;
-    printf "[-] Unique words used on $artist 's songs: %d\n", $size;
+    if( $#ARGV>0){
+        printf "[-] Unique words used on this song: %d\n", $size;
+    }else{
+        printf "[-] Unique words used on $artist 's songs: %d\n", $size;
+    }
 }
 
