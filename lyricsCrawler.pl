@@ -109,13 +109,23 @@ sub getLyrics{
 }
 
 sub sortResults {
+    my @noWords=('you','and','br','the');
+    my $boolean;
     my $count = 0;
-    print "\n[-] Most used words: \n";
-    
-    for (sort {$seen{$b} <=> $seen{$a} || lc($a) cmp lc($b) || $a  cmp  $b} keys %seen){
+    print "\n[-] @noWords Most used words: \n";
+  
+        for (sort {$seen{$b} <=> $seen{$a} || lc($a) cmp lc($b) || $a  cmp  $b} keys %seen){
+        my $boolean=0;
         next unless /\w/;
-        next if /(br)|^[a-zA-Z]{1,2}$/;
-        #next if /(br)|(i)/;
+        next if /^[a-zA-Z]{1,2}$/;
+        for (my $i=0 ; $i<=$#noWords ; $i++){
+            my $regex=qr/$noWords[$i]/i;
+            if($_=~$regex){
+                $boolean=1;
+                last;
+            }
+        }
+        next if($boolean == 1);
         printf "%-10s   found... %d times\n", $_, $seen{$_};
         last if ++$count > 9;
     }
@@ -123,8 +133,7 @@ sub sortResults {
     print "\n[-] Least used words: \n";
     for (sort { $seen{$a} <=> $seen{$b} || length($a) le length($b)} keys %seen){
         next unless /\w/;
-        next if /(br)|^[a-zA-Z]{1,2}$/;
-        #next if /(br)|(i)/;
+        next if /^[a-zA-Z]{1,2}$/;
         printf "%-10s   found... %d times\n", $_, $seen{$_};
         last if ++$count > 9;
     }
@@ -133,3 +142,4 @@ sub sortResults {
     my $size = keys %seen;
     printf "[-] Unique words used on $artist 's songs: %d\n", $size;
 }
+
