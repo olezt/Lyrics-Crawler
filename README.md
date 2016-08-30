@@ -6,6 +6,7 @@ Most / Least common words of your favorite artists' lyrics
 ### Description
 
 Find out the most and least common words that your favorite -or not- artists use in their lyrics.<br>
+Songs are used in random sequence each time.<br>
 Written entirely in Perl.<br>
 
 Lyrics are obtained by www.azlyrics.com. Only for educational purposes.<br> 
@@ -20,8 +21,4 @@ Lyrics are obtained by www.azlyrics.com. Only for educational purposes.<br>
 
 ### Requirements
 
-1. Perl 5
-
-### Future Additions
-
-1. Random selection of the songs
+1. Perl 5.8.0
