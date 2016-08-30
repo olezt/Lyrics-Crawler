@@ -21,8 +21,10 @@ my $artist;
 my %seen;
 my $artisturl;
 my %argvs;
+my $tee;
 
 main();
+close $tee;
 exit 1;
 
 sub main{
@@ -50,6 +52,7 @@ sub setNewArtist{
     getArtistUrl(); # get his profile url on azlyrics.com
     initRequest($artisturl); 
     getSongsUrl(); # get his songs' urls
+    open $tee, "|-", "tee $artist.txt";
     getUserInput(); # ask for number of songs to analyze
 }
 
@@ -60,9 +63,11 @@ sub manageArgvs{
     }
     if(exists $argvs{'-u'}){
         push(@urls, $argvs{'-u'});
+        open $tee, "|-", "tee url.txt";
         $numberofsongs=1;
     }elsif(exists $argvs{'-f'}){
         ifArgvf();
+        open $tee, "|-", "tee $argvs{'-f'}";
     }else{
         print "Argument is not valid.\n";
         exit 1;
@@ -100,7 +105,7 @@ sub getArtistUrl{
 
 # ask user to provide number of songs to analyze
 sub getUserInput{
-    print "[-] What are the most and least common words on $artist 's songs...\n";
+    print $tee "[-] What are the most and least common words on $artist 's songs...\n";
     print "[-] How many songs of $artist should we try? No more than $#urls!\n";
     # ask for number < available songs
     while (($numberofsongs=<STDIN>) !~ /\d/ || $numberofsongs>$#urls){
@@ -141,7 +146,7 @@ sub getLyrics{
     my $count = 0;
     print "\n";
     foreach (@urls){
-        print "[URL_$count]: $_\n";
+        print $tee "[URL_$count]: $_\n";
         initRequest($_);
         my $lyrics=0;
         foreach (@lines){
@@ -171,7 +176,7 @@ sub sortResults {
     my $boolean;
     my $count = 0;
     
-    print "\n[-] Most used words: \n";
+    print $tee "\n[-] Most used words: \n";
     # sort words in descending order
     for (sort {$seen{$b} <=> $seen{$a} || lc($a) cmp lc($b) || $a  cmp  $b} keys %seen){
         my $boolean=0;
@@ -186,25 +191,24 @@ sub sortResults {
             }
         }
         next if($boolean == 1);
-        printf "%-10s   found... %d times\n", $_, $seen{$_};
+        printf $tee "%-10s   found... %d times\n", $_, $seen{$_};
         last if ++$count > 9; # print only 10 results
     }
     $count = 0;
     
-    print "\n[-] Least used words: \n";
+    print $tee "\n[-] Least used words: \n";
     # sort words in ascending order
     for (sort { $seen{$a} <=> $seen{$b} || length($a) le length($b)} keys %seen){
         next unless /\w/; #skip any non-word characters
         next if /^[a-zA-Z]{1,2}$/; #skip words of 1 or 2 letters
-        printf "%-10s   found... %d times\n", $_, $seen{$_};
+        printf $tee "%-10s   found... %d times\n", $_, $seen{$_};
         last if ++$count > 9; # print only 10 results
     }
 
     my $size = keys %seen;
     if(exists $argvs{'-u'} || exists $argvs{'-f'}){
-        printf "\n[-] Unique words found: %d\n", $size;
+        printf $tee "\n[-] Unique words found: %d\n", $size;
     }else{
-        printf "\n[-] Unique words used on $artist 's songs: %d\n", $size;
+        printf $tee "\n[-] Unique words used on $artist 's songs: %d\n", $size;
     }
 }
-
