@@ -144,6 +144,9 @@ sub getLyrics{
                 $lyrics=0;
             }
             if($lyrics==1){
+                if( $_ =~ /[(.*:*)]/ ){
+                    next;
+                }
                 $seen{$_}++ for split /\W+/;
             }
         }
@@ -189,4 +192,3 @@ sub sortResults {
         printf "[-] Unique words used on $artist 's songs: %d\n", $size;
     }
 }
-
