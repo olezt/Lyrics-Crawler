@@ -12,33 +12,63 @@ use HTTP::Response;
 use HTML::LinkExtor;
 
 my $browser = LWP::UserAgent->new();
-$browser->timeout(10);
+   $browser->timeout(10);
 my @lines;
 my @urls;
 my $numberofsongs;
 my $artist;
 my %seen;
-my $count = 0;
+my $artisturl;
 
-initRequest('http://www.azlyrics.com/19/2pac.html');
-getUserInput();
-getSongsUrl();
-getLyrics();
-sortResults();
-1;
+main();
+exit 1;
+
+sub main{
+    setNewArtist();
+    
+    getUserInput();
+    getLyrics();
+    sortResults();
+}
+
+sub setNewArtist{
+    getUserInputArtist();
+    initRequest("http://search.azlyrics.com/search.php?q=$artist");
+    getArtistUrl();
+    initRequest($artisturl);
+    getSongsUrl();
+}
 
 sub initRequest{
     my $URL=$_[0];
     my $request = HTTP::Request->new(GET => $URL);
     my $response = $browser->request($request);
-    if ($response->is_error()) {printf "%s\n", $response->status_line;}
+    # if ($response->is_error()) {printf "%s\n", $response->status_line;}
     my $contents = $response->content();
     @lines = split('\n', $contents);
 }
 
+sub getUserInputArtist{
+    print "[-] Give me a well known artist...\n";
+    while (($artist=<STDIN>) !~ /\w/){
+        print "[-] How about a name:\n";
+    };
+}
+
+sub getArtistUrl{
+    foreach (@lines){
+        if ($_ =~ /1\..* <a href="(http:\/\/www\.azlyrics\.com\/.*\/.*\.html)" target="_blank">(.*|\s)/){
+            $artisturl=$1;
+            $artisturl=~/http:\/\/www\.azlyrics\.com\/.*\/(.*)\.html/;
+            $artist=$1;
+            last;
+        }
+    }
+}
+
 sub getUserInput{
-    print "[-] What are the most and least common words on 2Pac songs...\n";
-    print "[-] How many songs of Tupac should we try?\n";
+    print "[-] What are the most and least common words on $artist 's songs...\n";
+    print "[-] How many songs of $artist should we try?\n";
 
     while (($numberofsongs=<STDIN>) !~ /\d/){
         print "[-] How about a number:\n";
@@ -47,9 +77,13 @@ sub getUserInput{
 
 sub getSongsUrl{
     foreach (@lines){
-        if ($_ =~ /.*?(href="\.\.)(\/lyrics\/2pac\/.*?html)/ | /.*?(h:\.\.")(\/lyrics\/2pac\/.*?html)/){
+        if ($_ =~ /.*?(href="\.\.)(\/lyrics\/$artist\/.*?html)/ | /.*?(h:\.\.")(\/lyrics\/$artist\/.*?html)/){
             push(@urls, "http://www.azlyrics.com$2"); 
         }
+    }
+    if(!$urls[0]){
+        print "[-] Sorry this artist does not exist in azlyrics website.\n[-] Try someone else\n";
+        setNewArtist();
     }
 }
 
@@ -97,5 +131,5 @@ sub sortResults {
 
     print "\n";
     my $size = keys %seen;
-    printf "[-] Unique words used on $numberofsongs songs: %d\n", $size;
+    printf "[-] Unique words used on $artist 's songs: %d\n", $size;
 }
