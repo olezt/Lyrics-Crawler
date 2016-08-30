@@ -69,11 +69,12 @@ sub getArtistUrl{
 
 sub getUserInput{
     print "[-] What are the most and least common words on $artist 's songs...\n";
-    print "[-] How many songs of $artist should we try?\n";
+    print "[-] How many songs of $artist should we try? No more than $#urls!\n";
 
-    while (($numberofsongs=<STDIN>) !~ /\d/){
-        print "[-] How about a number:\n";
+    while (($numberofsongs=<STDIN>) !~ /\d/ || $numberofsongs>$#urls){
+        print "[-] How about a number, no more than $#urls:\n";
     };
+    
 }
 
 sub getSongsUrl{
